@@ -597,6 +597,10 @@ any other severe symptoms, please seek emergency care immediately.
 | Persistent patient records | ❌ Session-only memory |
 | Clinical validation | ❌ Not validated |
 
+
+<img width="1536" height="1024" alt="AutoGen Hospital" src="https://github.com/user-attachments/assets/e1190662-b076-4ed1-8103-6754fa007fa0" />
+
+
 ---
 
 ## 16. Future Enhancements
