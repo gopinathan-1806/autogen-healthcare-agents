@@ -1,0 +1,1 @@
+"""Hospital Customer Care package."""

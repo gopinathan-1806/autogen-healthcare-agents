@@ -1,0 +1,605 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MediFlow Architecture</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: #f0f4f8;
+    color: #1f2328;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 28px 20px 48px;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #0a1f35;
+    letter-spacing: -0.5px;
+  }
+  .page-header h1 span { color: #3b82d4; }
+  .page-header p {
+    font-size: 0.82rem;
+    color: #57606a;
+    margin-top: 4px;
+  }
+  .badge {
+    display: inline-block;
+    background: #fff3cd;
+    border: 1px solid #f6ad55;
+    border-radius: 12px;
+    padding: 3px 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #744210;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  /* ── Layout columns ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 16px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  /* ── Main flow column ── */
+  .flow-col { display: flex; flex-direction: column; gap: 0; }
+
+  /* ── Sidebar ── */
+  .side-col { display: flex; flex-direction: column; gap: 12px; }
+
+  /* ── Generic card ── */
+  .card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 0.78rem;
+  }
+  .card h3 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    color: #57606a;
+    margin-bottom: 7px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* ── Node boxes ── */
+  .node {
+    border-radius: 10px;
+    padding: 10px 14px;
+    position: relative;
+  }
+  .node-label {
+    font-size: 0.67rem;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    font-weight: 700;
+    opacity: 0.72;
+    margin-bottom: 2px;
+  }
+  .node-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .node-sub {
+    font-size: 0.71rem;
+    opacity: 0.78;
+    margin-top: 2px;
+    font-style: italic;
+  }
+  .node-file {
+    font-size: 0.68rem;
+    opacity: 0.6;
+    margin-top: 3px;
+    font-family: "SF Mono", "Fira Code", monospace;
+  }
+  .node-model {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: 0.66rem;
+    font-weight: 600;
+    margin-top: 5px;
+  }
+  .node-out {
+    display: inline-block;
+    background: rgba(255,255,255,0.35);
+    border-radius: 6px;
+    padding: 1px 7px;
+    font-size: 0.67rem;
+    font-weight: 600;
+    margin-top: 4px;
+    font-family: "SF Mono", "Fira Code", monospace;
+  }
+
+  /* Colours */
+  .n-ui     { background: #1e3a5f; color: #e8f0fc; border: none; }
+  .n-orch   { background: #1b4332; color: #d8f3dc; border: none; }
+  .n-intake { background: #2d4a7a; color: #dbeafe; border: none; }
+  .n-manager{ background: #1a3a5c; color: #bfdbfe; border: none; }
+  .n-spec   { background: #312e81; color: #e0e7ff; border: none; }
+  .n-clinical{background: #164e63; color: #cffafe; border: none; }
+  .n-review { background: #1a3a2a; color: #bbf7d0; border: none; }
+  .n-appt   { background: #44403c; color: #fef3c7; border: none; }
+  .n-mcp    { background: #7c3aed; color: #ede9fe; border: none; }
+  .n-llm    { background: #991b1b; color: #fee2e2; border: none; }
+  .n-emg    { background: #c53030; color: #fff; border: none; }
+  .n-scope  { background: #b45309; color: #fff; border: none; }
+  .n-mem    { background: #1e4d7a; color: #bae6fd; border: none; }
+
+  /* ── Arrows ── */
+  .arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    position: relative;
+  }
+  .arrow::before {
+    content: "";
+    display: block;
+    width: 2px;
+    height: 100%;
+    background: #94a3b8;
+    position: absolute;
+    left: 50%;
+  }
+  .arrow-label {
+    background: #f0f4f8;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 1px 7px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #334155;
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+  }
+
+  /* ── Branch row (emergency / scope / valid) ── */
+  .branch-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 8px;
+    margin: 0;
+    align-items: start;
+  }
+  .branch-arrow {
+    display: flex; flex-direction: column; align-items: center;
+    font-size: 0.65rem; color: #64748b; gap: 2px;
+  }
+  .branch-arrow svg { flex-shrink: 0; }
+
+  /* ── Specialist grid ── */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    gap: 6px;
+    margin: 0;
+  }
+  .spec-item {
+    border-radius: 8px;
+    padding: 7px 8px;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #e0e7ff;
+    background: #312e81;
+    border: 1.5px solid rgba(255,255,255,0.12);
+  }
+  .spec-item .icon { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+
+  /* ── Section labels ── */
+  .section-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-align: center;
+    padding: 4px 0 2px;
+  }
+
+  /* ── Side panel items ── */
+  .pill-list { display: flex; flex-direction: column; gap: 4px; }
+  .pill {
+    display: flex; align-items: flex-start; gap: 6px;
+    background: #f8fafc; border: 1px solid #e5e7eb;
+    border-radius: 7px; padding: 5px 8px;
+    font-size: 0.71rem; line-height: 1.4;
+  }
+  .pill-icon { font-size: 0.95rem; flex-shrink: 0; margin-top: 1px; }
+  .pill strong { font-weight: 700; display: block; color: #1f2328; }
+  .pill span   { color: #57606a; }
+
+  .tool-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .tool-list li {
+    font-size: 0.7rem; font-family: "SF Mono","Fira Code",monospace;
+    background: #f8fafc; border: 1px solid #e5e7eb;
+    border-radius: 5px; padding: 3px 7px; color: #334155;
+  }
+  .tool-list li::before { content: "⚙ "; color: #7c3aed; }
+
+  .model-row {
+    display: flex; align-items: center; gap: 8px;
+    background: #fff5f5; border: 1.5px solid #fca5a5;
+    border-radius: 8px; padding: 8px 10px;
+  }
+  .model-icon { font-size: 1.4rem; }
+  .model-info strong { font-size: 0.78rem; font-weight: 700; color: #991b1b; display: block; }
+  .model-info span   { font-size: 0.67rem; color: #7f1d1d; }
+
+  .schema-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .schema-list li {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.69rem;
+  }
+  .schema-list li::before {
+    content: ""; display: inline-block; width: 7px; height: 7px;
+    border-radius: 50%; flex-shrink: 0;
+  }
+  .s1::before{background:#2d4a7a;} .s2::before{background:#1a3a5c;}
+  .s3::before{background:#312e81;} .s4::before{background:#164e63;}
+  .s5::before{background:#1a3a2a;} .s6::before{background:#44403c;}
+
+  .schema-mono { font-family: "SF Mono","Fira Code",monospace; font-size: 0.67rem; color: #334155; font-weight: 600; }
+  .schema-desc { color: #57606a; }
+
+  .safety-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .safety-list li { font-size: 0.7rem; display: flex; align-items: flex-start; gap: 5px; }
+  .safety-list li::before { content: "✓"; color: #15803d; font-weight: 700; flex-shrink:0; }
+
+  .dept-table { width: 100%; border-collapse: collapse; font-size: 0.69rem; }
+  .dept-table th { text-align: left; font-weight: 700; color: #57606a; padding: 3px 6px; border-bottom: 1px solid #e5e7eb; }
+  .dept-table td { padding: 3px 6px; border-bottom: 1px solid #f1f5f9; }
+  .dept-code { font-family: "SF Mono","Fira Code",monospace; font-weight: 700; font-size: 0.65rem; }
+
+  .env-block {
+    background: #1e1e2e; border-radius: 8px; padding: 8px 12px;
+    font-family: "SF Mono","Fira Code",monospace; font-size: 0.68rem;
+    line-height: 1.7; color: #cdd6f4;
+  }
+  .env-comment { color: #6c7086; }
+  .env-key     { color: #89b4fa; }
+  .env-val     { color: #a6e3a1; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center; margin-top: 28px;
+    padding-top: 14px; border-top: 1px solid #e5e7eb;
+    font-size: 0.72rem; color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Medi<span>Flow</span> — Architecture Overview</h1>
+  <p>AI Assisted Customer Care &amp; Patient Navigation · New York Medical Centre</p>
+  <div class="badge">⚕ Educational Prototype — Not for Clinical Use</div>
+</div>
+
+<div class="layout">
+
+  
+  <div class="flow-col">
+
+    
+    <div class="node n-ui">
+      <div class="node-label">Entry Point</div>
+      <div class="node-title">🖥 Streamlit UI</div>
+      <div class="node-sub">4-step wizard intake form → results page (dept banner · care rec · appointment slots)</div>
+      <div class="node-file">app.py</div>
+    </div>
+
+    <div class="arrow">
+      <span class="arrow-label">IntakeData (Pydantic)</span>
+    </div>
+
+    
+    <div class="node n-orch">
+      <div class="node-label">Workflow Controller</div>
+      <div class="node-title">⚙ HospitalOrchestrator</div>
+      <div class="node-sub">Deterministic — application code controls flow, not LLM</div>
+      <div class="node-file">services/orchestration.py</div>
+    </div>
+
+    <div class="arrow">
+      <span class="arrow-label">Step 1 · IntakeData + question</span>
+    </div>
+
+    
+    <div class="node n-mem" style="border-left:4px solid #38bdf8">
+      <div class="node-label">Session Memory</div>
+      <div class="node-title">🧠 AutoGen ListMemory</div>
+      <div class="node-sub">Context shared across all agents within one session · not persisted</div>
+      <div class="node-file">services/memory.py</div>
+    </div>
+
+    <div class="arrow">
+      <span class="arrow-label">Step 2 · routes to Manager</span>
+    </div>
+
+    
+    <div class="node n-manager">
+      <div class="node-label">Agent 2 · Router</div>
+      <div class="node-title">📋 Manager Agent</div>
+      <div class="node-sub">Validates request · detects emergency · routes to department</div>
+      <div class="node-file">agents/manager_agent.py</div>
+      <div class="node-model">🤖 GPT-4o / LLM call</div>
+      <div class="node-out">→ ManagerDecision {department, status, priority}</div>
+    </div>
+
+    <div class="arrow" style="height:16px"><span class="arrow-label">status check</span></div>
+
+    
+    <div class="branch-row">
+      <div>
+        <div class="branch-arrow">
+          <svg width="18" height="18"><path d="M9 0 L9 14 M3 8 L9 14 L15 8" stroke="#ef4444" stroke-width="2" fill="none" stroke-linecap="round"></path></svg>
+          <span style="color:#ef4444;font-weight:700">EMERGENCY</span>
+        </div>
+        <div class="node n-emg" style="margin-top:4px">
+          <div style="font-size:0.76rem;font-weight:700">🚨 Emergency Response</div>
+          <div style="font-size:0.66rem;margin-top:2px;opacity:0.85">Immediate stop · directs to 911 / ED · no further agents called</div>
+        </div>
+      </div>
+      <div>
+        <div class="branch-arrow">
+          <svg width="18" height="18"><path d="M9 0 L9 14 M3 8 L9 14 L15 8" stroke="#d97706" stroke-width="2" fill="none" stroke-linecap="round"></path></svg>
+          <span style="color:#d97706;font-weight:700">OUT_OF_SCOPE</span>
+        </div>
+        <div class="node n-scope" style="margin-top:4px">
+          <div style="font-size:0.76rem;font-weight:700">🚫 Scope Response</div>
+          <div style="font-size:0.66rem;margin-top:2px;opacity:0.85">Not a medical request · polite redirect · workflow stops</div>
+        </div>
+      </div>
+      <div>
+        <div class="branch-arrow">
+          <svg width="18" height="18"><path d="M9 0 L9 14 M3 8 L9 14 L15 8" stroke="#22c55e" stroke-width="2" fill="none" stroke-linecap="round"></path></svg>
+          <span style="color:#22c55e;font-weight:700">VALID → continues ↓</span>
+        </div>
+        <div style="height:8px"></div>
+      </div>
+    </div>
+
+    <div class="arrow" style="height:20px"><span class="arrow-label">Step 3 · routes to one specialist</span></div>
+
+    
+    <div class="section-label">Specialist Agents — only the relevant one is activated</div>
+    <div style="height:4px"></div>
+
+    
+    <div class="spec-grid">
+      <div class="spec-item"><span class="icon">🦴</span>ORTHO<br /><span style="font-size:0.6rem;opacity:0.75;font-weight:400">Bones · Joints<br />Muscles</span></div>
+      <div class="spec-item"><span class="icon">🧠</span>NEURO<br /><span style="font-size:0.6rem;opacity:0.75;font-weight:400">Headaches · Nerve<br />Neurological</span></div>
+      <div class="spec-item"><span class="icon">🫘</span>NEPHRO<br /><span style="font-size:0.6rem;opacity:0.75;font-weight:400">Kidney · Renal<br />Dialysis</span></div>
+      <div class="spec-item"><span class="icon">🦷</span>DENTAL<br /><span style="font-size:0.6rem;opacity:0.75;font-weight:400">Teeth · Gums<br />Oral Health</span></div>
+      <div class="spec-item"><span class="icon">❤️</span>CARDIO<br /><span style="font-size:0.6rem;opacity:0.75;font-weight:400">Heart · BP<br />Cardiovascular</span></div>
+    </div>
+
+    <div style="background:#312e81;border-radius:8px;padding:6px 12px;margin-top:2px;display:flex;align-items:center;gap:10px">
+      <div style="font-size:0.67rem;color:#e0e7ff;flex:1">
+        <strong>agents/specialist_agents.py</strong> · GPT-4o / LLM call · receives IntakeData + question + ManagerDecision
+      </div>
+      <div style="background:rgba(255,255,255,0.15);border-radius:6px;padding:2px 8px;font-size:0.66rem;font-family:monospace;color:#c7d2fe;white-space:nowrap">→ SpecialistAssessment</div>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">Step 4 · IntakeData + SpecialistAssessment</span></div>
+
+    
+    <div class="node n-clinical">
+      <div class="node-label">Agent 8</div>
+      <div class="node-title">🩺 Clinical Support Agent</div>
+      <div class="node-sub">Structures next-step plan · all tests framed as "discuss with your doctor" · never orders independently</div>
+      <div class="node-file">agents/clinical_support_agent.py</div>
+      <div class="node-model">🤖 GPT-4o / LLM call</div>
+      <div class="node-out">→ ClinicalRecommendation {investigations_to_discuss, information_to_bring, urgency}</div>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">Step 5 · all agent outputs</span></div>
+
+    
+    <div class="node n-review" style="border:2px solid #22c55e">
+      <div class="node-label">Agent 9 · Safety Gate</div>
+      <div class="node-title">🛡 Reviewer Agent</div>
+      <div class="node-sub">13-point safety checklist · APPROVED or REVISED · rewrites unsafe content</div>
+      <div class="node-file">agents/reviewer_agent.py</div>
+      <div class="node-model">🤖 GPT-4o / LLM call</div>
+      <div class="node-out">→ ReviewResult {verdict, final_answer}</div>
+      <div style="margin-top:6px;background:rgba(255,255,255,0.12);border-radius:6px;padding:4px 8px;font-size:0.68rem;color:#bbf7d0">
+        ✅ <strong>ONLY the final_answer from this agent is ever shown to the patient</strong>
+      </div>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">Step 6 · approved department</span></div>
+
+    
+    <div class="node n-appt">
+      <div class="node-label">Agent 10</div>
+      <div class="node-title">📅 Appointment Agent</div>
+      <div class="node-sub">Calls MCP server via AutoGen McpWorkbench (stdio) · requires explicit user confirmation to book</div>
+      <div class="node-file">agents/appointment_agent.py</div>
+      <div class="node-out">→ List[AppointmentSlot]</div>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">stdio transport</span></div>
+
+    
+    <div class="node n-mcp">
+      <div class="node-label">MCP Server · FastMCP</div>
+      <div class="node-title">🔌 Hospital MCP Server</div>
+      <div class="node-sub">Read-only · mock data only · tool arguments validated against allowlists</div>
+      <div class="node-file">hospital_customer_care/hospital_mcp_server.py</div>
+      <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px">
+        <span style="background:rgba(255,255,255,0.18);border-radius:5px;padding:1px 6px;font-size:0.62rem;font-family:monospace;color:#ede9fe">list_departments()</span>
+        <span style="background:rgba(255,255,255,0.18);border-radius:5px;padding:1px 6px;font-size:0.62rem;font-family:monospace;color:#ede9fe">get_department_scope()</span>
+        <span style="background:rgba(255,255,255,0.18);border-radius:5px;padding:1px 6px;font-size:0.62rem;font-family:monospace;color:#ede9fe">get_emergency_guidance()</span>
+        <span style="background:rgba(255,255,255,0.18);border-radius:5px;padding:1px 6px;font-size:0.62rem;font-family:monospace;color:#ede9fe">get_available_doctors()</span>
+        <span style="background:rgba(255,255,255,0.18);border-radius:5px;padding:1px 6px;font-size:0.62rem;font-family:monospace;color:#ede9fe">get_available_appointments()</span>
+        <span style="background:rgba(255,255,255,0.18);border-radius:5px;padding:1px 6px;font-size:0.62rem;font-family:monospace;color:#ede9fe">get_doctor_details()</span>
+        <span style="background:rgba(255,255,255,0.18);border-radius:5px;padding:1px 6px;font-size:0.62rem;font-family:monospace;color:#ede9fe">get_hospital_services()</span>
+      </div>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">reads</span></div>
+
+    
+    <div class="node" style="background:#2d2d3a;color:#e2e8f0;border:none">
+      <div class="node-label">Static Data</div>
+      <div class="node-title">📄 mock_hospital_data.json</div>
+      <div class="node-sub">5 departments · 10 doctors · 24 appointment slots · no real patient data</div>
+      <div class="node-file">data/mock_hospital_data.json</div>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">ReviewResult + slots → shown to patient</span></div>
+
+    
+    <div class="node n-ui">
+      <div class="node-label">Patient-Facing Output</div>
+      <div class="node-title">✅ Final Response in Streamlit</div>
+      <div class="node-sub">Dept banner · Care Recommendation · Doctor cards · Appointment slot picker · Disclaimer</div>
+      <div style="margin-top:5px;font-size:0.68rem;opacity:0.75">Raw agent outputs, JSON, system prompts, tool calls — NEVER shown</div>
+    </div>
+
+  </div>
+
+
+  
+  <div class="side-col">
+
+    
+    <div class="card">
+      <h3>🤖 LLM Configuration</h3>
+      <div class="model-row">
+        <div class="model-icon">🔑</div>
+        <div class="model-info">
+          <strong>OpenAI-compatible GPT</strong>
+          <span>Loaded from .env — never hardcoded</span>
+        </div>
+      </div>
+      <div style="height:8px"></div>
+      <div class="env-block">
+<span class="env-comment"># .env</span>
+<br /><span class="env-key">OPENAI_API_KEY</span>=<span class="env-val">sk-…</span>
+<br /><span class="env-key">OPENAI_MODEL</span>=<span class="env-val">gpt-4o-mini</span>
+<br /><span class="env-key">OPENAI_BASE_URL</span>=<span class="env-val">(optional)</span>
+<br /><span class="env-key">DEBUG_MODE</span>=<span class="env-val">false</span>
+      </div>
+      <div style="font-size:0.66rem;color:#57606a;margin-top:5px">LLM calls: Manager · 5 Specialists · Clinical Support · Reviewer = max 8 calls per session</div>
+    </div>
+
+    
+    <div class="card">
+      <h3>📦 Pydantic Models (schemas.py)</h3>
+      <ul class="schema-list">
+        <li class="s1"><span class="schema-mono">IntakeData</span><span class="schema-desc">  · patient form</span></li>
+        <li class="s1"><span class="schema-mono">PatientProfile</span><span class="schema-desc">  · demographics</span></li>
+        <li class="s1"><span class="schema-mono">Complaint</span><span class="schema-desc">  · symptom detail</span></li>
+        <li class="s1"><span class="schema-mono">MedicalHistory</span><span class="schema-desc">  · conditions/meds</span></li>
+        <li class="s2"><span class="schema-mono">ManagerDecision</span><span class="schema-desc">  · routing output</span></li>
+        <li class="s3"><span class="schema-mono">SpecialistAssessment</span><span class="schema-desc">  · dept output</span></li>
+        <li class="s4"><span class="schema-mono">ClinicalRecommendation</span><span class="schema-desc">  · next steps</span></li>
+        <li class="s5"><span class="schema-mono">ReviewResult</span><span class="schema-desc">  · safety gate</span></li>
+        <li class="s6"><span class="schema-mono">AppointmentSlot</span><span class="schema-desc">  · MCP result</span></li>
+        <li class="s6"><span class="schema-mono">SessionState</span><span class="schema-desc">  · full session</span></li>
+      </ul>
+    </div>
+
+    
+    <div class="card">
+      <h3>🏥 Routable Departments</h3>
+      <table class="dept-table">
+        <tr><th>Code</th><th>Department</th></tr>
+        <tr><td><span class="dept-code">ORTHO</span></td><td>Orthopedics &amp; Sports Medicine</td></tr>
+        <tr><td><span class="dept-code">NEURO</span></td><td>Neurology</td></tr>
+        <tr><td><span class="dept-code">NEPHRO</span></td><td>Nephrology</td></tr>
+        <tr><td><span class="dept-code">DENTAL</span></td><td>Dental &amp; Oral Health</td></tr>
+        <tr><td><span class="dept-code">CARDIO</span></td><td>Cardiology</td></tr>
+      </table>
+      <div style="font-size:0.66rem;color:#57606a;margin-top:5px">Dept validated against allowlist — LLM cannot invent a department</div>
+    </div>
+
+    
+    <div class="card">
+      <h3>🛡 Reviewer 13-Point Checklist</h3>
+      <ul class="safety-list">
+        <li>Correct department selected</li>
+        <li>Patient info handled appropriately</li>
+        <li>No disease diagnosis</li>
+        <li>No medication prescription</li>
+        <li>No dosage recommendation</li>
+        <li>No unsupported test orders</li>
+        <li>Emergency symptoms handled</li>
+        <li>No invented medical history</li>
+        <li>No invented test results</li>
+        <li>No invented hospital info</li>
+        <li>Response is understandable</li>
+        <li>Appropriate length</li>
+        <li>Relevant content only</li>
+      </ul>
+    </div>
+
+    
+    <div class="card">
+      <h3>⚙ Technology Stack</h3>
+      <div class="pill-list">
+        <div class="pill"><span class="pill-icon">🐍</span><div><strong>Python 3.10+</strong><span>Runtime</span></div></div>
+        <div class="pill"><span class="pill-icon">🤖</span><div><strong>AutoGen AgentChat 0.7.5</strong><span>Agent framework</span></div></div>
+        <div class="pill"><span class="pill-icon">🔌</span><div><strong>FastMCP (mcp 1.28+)</strong><span>MCP server</span></div></div>
+        <div class="pill"><span class="pill-icon">🖥</span><div><strong>Streamlit 1.35+</strong><span>Web UI</span></div></div>
+        <div class="pill"><span class="pill-icon">📦</span><div><strong>Pydantic v2</strong><span>Schema validation</span></div></div>
+        <div class="pill"><span class="pill-icon">🧠</span><div><strong>AutoGen ListMemory</strong><span>Session memory</span></div></div>
+        <div class="pill"><span class="pill-icon">🔒</span><div><strong>python-dotenv</strong><span>Secrets management</span></div></div>
+        <div class="pill"><span class="pill-icon">🧪</span><div><strong>pytest · 56 tests</strong><span>Unit test suite</span></div></div>
+      </div>
+    </div>
+
+    
+    <div class="card">
+      <h3>▶ Quick Start</h3>
+      <div class="env-block">
+<span class="env-comment"># install</span>
+<br />pip install -r requirements.txt
+<br />
+<br /><span class="env-comment"># run app</span>
+<br />streamlit run app.py
+<br />
+<br /><span class="env-comment"># run tests</span>
+<br />python3.10 -m pytest tests/ -v
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">
+  Made with IBM Bob  ·  MediFlow v1.0  ·  Educational Prototype — Not for Clinical Use
+</div>
+
+</body>
+</html>

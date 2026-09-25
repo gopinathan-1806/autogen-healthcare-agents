@@ -1,0 +1,210 @@
+{
+  "hospital": {
+    "name": "CityMed Hospital",
+    "address": "123 Healthcare Avenue, Medical District",
+    "phone": "+1-800-CITYMED",
+    "emergency": "+1-800-EMERGENCY",
+    "website": "https://citymed.example.com",
+    "hours": "Monday - Saturday: 8:00 AM - 8:00 PM | Emergency: 24/7"
+  },
+  "departments": {
+    "ORTHO": {
+      "name": "Orthopedics & Sports Medicine",
+      "description": "Specialises in bones, joints, muscles, fractures, arthritis, and sports injuries.",
+      "scope": ["bone pain", "joint pain", "fracture", "arthritis", "sports injury", "knee pain", "back pain", "shoulder pain", "hip pain", "muscle strain", "ligament injury", "spine", "musculoskeletal"],
+      "location": "Block A, 2nd Floor",
+      "phone": "Ext. 201"
+    },
+    "NEURO": {
+      "name": "Neurology",
+      "description": "Specialises in headaches, dizziness, neurological symptoms, nerve complaints, seizures, and brain-related concerns.",
+      "scope": ["headache", "migraine", "dizziness", "vertigo", "seizure", "epilepsy", "nerve pain", "numbness", "tingling", "weakness", "memory loss", "tremor", "stroke", "neurological"],
+      "location": "Block B, 3rd Floor",
+      "phone": "Ext. 301"
+    },
+    "NEPHRO": {
+      "name": "Nephrology",
+      "description": "Specialises in kidney-related complaints, renal function, dialysis, and kidney-related symptoms.",
+      "scope": ["kidney pain", "renal failure", "dialysis", "blood in urine", "swelling legs", "chronic kidney", "urinary", "proteinuria", "creatinine", "kidney stone"],
+      "location": "Block C, 1st Floor",
+      "phone": "Ext. 101"
+    },
+    "DENTAL": {
+      "name": "Dental & Oral Health",
+      "description": "Specialises in teeth, gums, oral health, dental pain, and dental procedures.",
+      "scope": ["tooth pain", "toothache", "gum disease", "cavity", "dental extraction", "root canal", "teeth", "oral", "mouth pain", "jaw pain", "dental", "gums"],
+      "location": "Block D, Ground Floor",
+      "phone": "Ext. 401"
+    },
+    "CARDIO": {
+      "name": "Cardiology",
+      "description": "Specialises in heart-related concerns, blood pressure, cardiovascular symptoms, and chest-related concerns.",
+      "scope": ["chest pain", "heart palpitations", "breathlessness", "high blood pressure", "hypertension", "heart failure", "arrhythmia", "angina", "cardiovascular", "ECG", "cardiac"],
+      "location": "Block E, 2nd Floor",
+      "phone": "Ext. 501"
+    }
+  },
+  "doctors": {
+    "ORTHO": [
+      {
+        "doctor_id": "ORTH001",
+        "name": "Dr. Sarah Mitchell",
+        "department": "ORTHO",
+        "specialty": "Orthopedic Surgery & Sports Medicine",
+        "qualifications": "MBBS, MS (Ortho), FRCS",
+        "available_days": ["Monday", "Wednesday", "Friday"]
+      },
+      {
+        "doctor_id": "ORTH002",
+        "name": "Dr. James Patel",
+        "department": "ORTHO",
+        "specialty": "Joint Replacement & Arthroscopy",
+        "qualifications": "MBBS, DNB (Ortho), Fellowship Joint Replacement",
+        "available_days": ["Tuesday", "Thursday", "Saturday"]
+      }
+    ],
+    "NEURO": [
+      {
+        "doctor_id": "NEUR001",
+        "name": "Dr. Priya Sharma",
+        "department": "NEURO",
+        "specialty": "Neurology & Headache Medicine",
+        "qualifications": "MBBS, DM (Neurology), FAAN",
+        "available_days": ["Monday", "Tuesday", "Thursday"]
+      },
+      {
+        "doctor_id": "NEUR002",
+        "name": "Dr. Robert Chen",
+        "department": "NEURO",
+        "specialty": "Epilepsy & Stroke Neurology",
+        "qualifications": "MBBS, MD (Neurology), Fellowship Epilepsy",
+        "available_days": ["Wednesday", "Friday", "Saturday"]
+      }
+    ],
+    "NEPHRO": [
+      {
+        "doctor_id": "NEPH001",
+        "name": "Dr. Anita Reddy",
+        "department": "NEPHRO",
+        "specialty": "Nephrology & Renal Medicine",
+        "qualifications": "MBBS, DM (Nephrology), FASN",
+        "available_days": ["Monday", "Wednesday", "Friday"]
+      },
+      {
+        "doctor_id": "NEPH002",
+        "name": "Dr. Kevin O'Brien",
+        "department": "NEPHRO",
+        "specialty": "Kidney Transplant & Dialysis",
+        "qualifications": "MBBS, MD (Nephrology), Fellowship Transplant",
+        "available_days": ["Tuesday", "Thursday"]
+      }
+    ],
+    "DENTAL": [
+      {
+        "doctor_id": "DENT001",
+        "name": "Dr. Lisa Thompson",
+        "department": "DENTAL",
+        "specialty": "General & Restorative Dentistry",
+        "qualifications": "BDS, MDS (Conservative Dentistry)",
+        "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+      },
+      {
+        "doctor_id": "DENT002",
+        "name": "Dr. Mohammed Al-Hassan",
+        "department": "DENTAL",
+        "specialty": "Oral Surgery & Implants",
+        "qualifications": "BDS, MDS (Oral Surgery), FDSRCS",
+        "available_days": ["Tuesday", "Thursday", "Saturday"]
+      }
+    ],
+    "CARDIO": [
+      {
+        "doctor_id": "CARD001",
+        "name": "Dr. Elena Vasquez",
+        "department": "CARDIO",
+        "specialty": "Interventional Cardiology",
+        "qualifications": "MBBS, DM (Cardiology), FACC",
+        "available_days": ["Monday", "Wednesday", "Friday"]
+      },
+      {
+        "doctor_id": "CARD002",
+        "name": "Dr. Thomas Nguyen",
+        "department": "CARDIO",
+        "specialty": "Heart Failure & Electrophysiology",
+        "qualifications": "MBBS, DM (Cardiology), Fellowship EP",
+        "available_days": ["Tuesday", "Thursday", "Saturday"]
+      }
+    ]
+  },
+  "appointments": {
+    "ORTHO": [
+      {"date": "25 Sep 2026", "time": "09:00 AM", "doctor_id": "ORTH001", "available": true},
+      {"date": "25 Sep 2026", "time": "11:30 AM", "doctor_id": "ORTH001", "available": true},
+      {"date": "26 Sep 2026", "time": "10:00 AM", "doctor_id": "ORTH002", "available": true},
+      {"date": "26 Sep 2026", "time": "02:30 PM", "doctor_id": "ORTH002", "available": true},
+      {"date": "27 Sep 2026", "time": "09:30 AM", "doctor_id": "ORTH001", "available": true}
+    ],
+    "NEURO": [
+      {"date": "25 Sep 2026", "time": "10:30 AM", "doctor_id": "NEUR001", "available": true},
+      {"date": "25 Sep 2026", "time": "03:00 PM", "doctor_id": "NEUR001", "available": true},
+      {"date": "26 Sep 2026", "time": "11:00 AM", "doctor_id": "NEUR002", "available": true},
+      {"date": "26 Sep 2026", "time": "04:30 PM", "doctor_id": "NEUR002", "available": true},
+      {"date": "27 Sep 2026", "time": "09:00 AM", "doctor_id": "NEUR001", "available": true}
+    ],
+    "NEPHRO": [
+      {"date": "25 Sep 2026", "time": "08:30 AM", "doctor_id": "NEPH001", "available": true},
+      {"date": "25 Sep 2026", "time": "01:00 PM", "doctor_id": "NEPH001", "available": true},
+      {"date": "26 Sep 2026", "time": "10:30 AM", "doctor_id": "NEPH002", "available": true},
+      {"date": "27 Sep 2026", "time": "02:00 PM", "doctor_id": "NEPH001", "available": true}
+    ],
+    "DENTAL": [
+      {"date": "25 Sep 2026", "time": "09:00 AM", "doctor_id": "DENT001", "available": true},
+      {"date": "25 Sep 2026", "time": "11:00 AM", "doctor_id": "DENT001", "available": true},
+      {"date": "25 Sep 2026", "time": "03:00 PM", "doctor_id": "DENT002", "available": true},
+      {"date": "26 Sep 2026", "time": "10:00 AM", "doctor_id": "DENT001", "available": true},
+      {"date": "26 Sep 2026", "time": "04:00 PM", "doctor_id": "DENT002", "available": true}
+    ],
+    "CARDIO": [
+      {"date": "25 Sep 2026", "time": "08:00 AM", "doctor_id": "CARD001", "available": true},
+      {"date": "25 Sep 2026", "time": "12:00 PM", "doctor_id": "CARD001", "available": true},
+      {"date": "26 Sep 2026", "time": "09:30 AM", "doctor_id": "CARD002", "available": true},
+      {"date": "26 Sep 2026", "time": "03:30 PM", "doctor_id": "CARD002", "available": true},
+      {"date": "27 Sep 2026", "time": "10:00 AM", "doctor_id": "CARD001", "available": true}
+    ]
+  },
+  "services": [
+    "Outpatient Consultations",
+    "Emergency Care (24/7)",
+    "Diagnostic Imaging (X-Ray, CT, MRI, Ultrasound)",
+    "Pathology & Laboratory",
+    "Physiotherapy & Rehabilitation",
+    "Pharmacy",
+    "Cardiology (ECG, Echo, Stress Test)",
+    "Nephrology & Dialysis Unit",
+    "Dental & Oral Surgery",
+    "Neurology & EEG",
+    "Orthopedic Surgery",
+    "Telemedicine Consultations"
+  ],
+  "emergency_guidance": {
+    "message": "If you or someone nearby is experiencing a medical emergency, please call emergency services immediately or proceed to the nearest emergency department. Do not delay emergency care.",
+    "emergency_number": "112 / 911 / local emergency number",
+    "hospital_emergency": "+1-800-EMERGENCY",
+    "red_flag_symptoms": [
+      "Sudden severe headache ('worst headache of life')",
+      "Loss of consciousness",
+      "Severe chest pain or pressure",
+      "Difficulty breathing or shortness of breath",
+      "Signs of stroke: face drooping, arm weakness, speech difficulty",
+      "Sudden severe weakness or paralysis",
+      "Uncontrolled severe bleeding",
+      "Seizure in someone with no known history",
+      "Severe allergic reaction (anaphylaxis)",
+      "Suicidal thoughts or self-harm crisis",
+      "Severe abdominal pain",
+      "Coughing or vomiting blood",
+      "Sudden vision loss",
+      "Severe burns"
+    ]
+  }
+}
